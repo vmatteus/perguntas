@@ -169,15 +169,15 @@ include "tudo.php";
 		<form id="formulario" method="post" action="grava.php">
 			<div class="linha">
 				<label>1. Nome</label>
-				<input id="nome" type="text"/>
+				<input id="nome" name="nome" type="text"/>
 			</div>
 			<div class="linha gray">
 				<label>2. Data de nascimento*</label>
-				<input id="idade" type="text"/>
+				<input id="data_nascimento" name="dt_nascimento" type="text"/>
 			</div>
 			<div class="linha">
 				<label>3. Sexo*</label>
-				<select>
+				<select name="sexo">
 					<option select="selected">Selecione...</option>
 					<option>Masculino</option>
 					<option>Feminino</option>
@@ -185,7 +185,7 @@ include "tudo.php";
 			</div>
 			<div class="linha gray">
 				<label>4. Estado*</label>
-				<select id="estado">
+				<select name="estado" id="estado">
 				    <option value="AC">AC</option>
 				    <option value="AL">AL</option>
 				    <option value="AM">AM</option>
@@ -219,10 +219,19 @@ include "tudo.php";
 			<?php
 				$perguntas = new Perguntas();
 				$arrayPerguntas = $perguntas->listaPerguntas();
-				foreach ($arrayPerguntas as $pergunta) {
+				foreach ($arrayPerguntas as $key => $pergunta) {
+					if ( ($key % 2) == 0) {
+						$pinta = "";
+					} else {
+						$pinta = "gray";
+					}
+
+					// Chave mais o numero de campos que a pessoa tem
+					$numeroPergunta = $key+5;
+
 			?>
-			<div class="linha">
-				<label>5. <?php echo $pergunta->txt_pergunta; ?><?php if ($pergunta->obrigatoria == "S") { echo "*"; } ?></label>
+			<div class="linha <?php echo $pinta; ?>">
+				<label><?php echo  $numeroPergunta . ". ". $pergunta->txt_pergunta; ?><?php if ($pergunta->obrigatoria == "S") { echo "*"; } ?></label>
 
 				<?php
 
