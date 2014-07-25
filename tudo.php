@@ -1,35 +1,6 @@
 <?php
 
-class PdoCon extends PDO { 
-    
-    private $engine; 
-    private $host; 
-    private $database; 
-    private $user; 
-    private $pass; 
-    
-    public function __construct(){ 
-    	
-    	if($_SERVER["HTTP_HOST"] == "11localhost:8888"){
-	        $this->engine = 'mysql'; 
-	        $this->host = 'localhost'; 
-	        $this->database = 'formularios'; 
-	        $this->user = 'root'; 
-	        $this->pass = 'root'; 
-    	} else {
-    		$this->engine = 'mysql'; 
-	        $this->host = 'cpro21753.publiccloud.com.br'; 
-	        $this->database = 'formularios'; 
-	        $this->user = 'root'; 
-	        $this->pass = '050887'; 
-    	}
-        
-        $dns = $this->engine.':dbname='.$this->database.";host=".$this->host; 
-        
-        parent::__construct( $dns, $this->user, $this->pass ); 
-        $this->exec("SET CHARACTER SET utf8");
-    } 
-} 
+include "pdocon.php";
 
 class Pessoa {
 	public $nome;
