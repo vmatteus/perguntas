@@ -231,7 +231,16 @@ include "tudo.php";
 
 			?>
 			<div class="linha <?php echo $pinta; ?>">
-				<label><?php echo  $numeroPergunta . ". ". $pergunta->txt_pergunta; ?><?php if ($pergunta->obrigatoria == "S") { echo "*"; } ?></label>
+
+				<?php 
+				$perguntaLabel = $pergunta->txt_pergunta;
+				$perguntaLabelArray = explode("|", $perguntaLabel);
+				if (count($perguntaLabelArray) > 1) {
+					$perguntaLabel = $perguntaLabelArray[0];
+				}
+				?>
+
+				<label><?php echo  $numeroPergunta . ". ". $perguntaLabel; ?><?php if ($pergunta->obrigatoria == "S") { echo "*"; } ?></label>
 
 				<?php
 
@@ -241,10 +250,10 @@ include "tudo.php";
 					case 'VFT':
 					?>
 						<div class="radiogroup">
-							<label id="nRestaurantesLactose"><input type="radio" name="<?php echo $name ?>" for="nRestaurantesLactose"><span>Não</span></label>
-							<label id="RestaurantesLactose"><input type="radio" name="<?php echo $name ?>" for="RestaurantesLactose"><span>Sim</span></label>	
+							<label id="<?php echo $name ?>_n"><input type="radio" name="<?php echo $name ?>" for="nRestaurantesLactose"><span>Não</span></label>
+							<label id="<?php echo $name ?>_s"><input type="radio" name="<?php echo $name ?>" for="RestaurantesLactose"><span>Sim</span></label>	
 							<label class="lblInputText" for="nomeRestaurante">Quais</label>
-							<input type="text" id="nomeRestaurante" name="<?php echo $name ?>_resposta">							
+							<input type="text" id="<?php echo $name ?>_resposta" name="<?php echo $name ?>_resposta">							
 						</div>
 					<?php
 						break;
@@ -265,12 +274,13 @@ include "tudo.php";
 						
 						break;
 					case 'PONTUACAO':
+
+					array_shift($perguntaLabelArray);
+					foreach ($perguntaLabelArray as $perguntaPont) {
 					?>
-						<label for="opt1"><input id="opt1"  class="small" type="text"/><span>Encontrar produtos sem lactose</span></label>
-						<label for="opt2"><input id="opt2" class="small" type="text"/><span>Achar e compartilhar receitas para intolerantes à lactose</span></label>
-						<label for="opt3"><input id="opt3" class="small" type="text"/><span>Um espaço para troca de ideias e informações</span></label>
-						<label for="opt4"><input id="opt4" class="small" type="text"/><span>Locais que ofereçam pratos sem lactose</span></label>
+						<label for="opt1"><input id="opt1"  class="small" type="text"/><span><?php echo $perguntaPont; ?></span></label>
 					<?php
+					} 
 						break;
 					default:
 						
