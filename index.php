@@ -7,6 +7,98 @@ include "tudo.php";
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Questionário para intolerantes à lactose</title>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script>
+
+	function perguntaSn(name) {
+		var pergunta = $("[name="+name+"]"); 
+		var pergunta_resposta = $("[name="+name+"_resposta]"); 
+		var lbl_pergunta_respota = $(".lbl"+name+"_resposta"); 
+		pergunta.click(function(){
+			if (pergunta.filter(':checked').val() == "S") {
+				pergunta_resposta.show();
+				lbl_pergunta_respota.show();
+			} else {
+				pergunta_resposta.hide();
+				lbl_pergunta_respota.hide();
+			}
+		});
+	}
+
+	function validaCampos() {
+		
+		var dt_nascimento = $("[name=dt_nascimento]");
+		var sexo = $("[name=sexo]");
+		var estado = $("[name=estado]");
+
+		var txt_e = "é obrigatória."; // são ou é
+		var txt_sao = "são obrigatórias."; // são ou é
+		var txt_e_ou_sao = "";
+		var num_quest_obrigatorias = "";
+
+		var countObrigatorias = 0;
+		
+		if (dt_nascimento.val() == "") {
+			countObrigatorias++;
+			num_quest_obrigatorias = "2";
+			txt_e_ou_sao = txt_e;
+		}
+
+		if (sexo.val() == "") {
+			if(countObrigatorias > 0) {
+				countObrigatorias++;
+				num_quest_obrigatorias += ", 3";
+				txt_e_ou_sao = txt_sao;
+			} else {
+				countObrigatorias++;
+				num_quest_obrigatorias += "3";
+				txt_e_ou_sao = txt_e;
+			}
+		}
+
+		if (estado.val() == "") {
+			if(countObrigatorias > 1) {
+				countObrigatorias++;
+				num_quest_obrigatorias += ", 4";
+				txt_e_ou_sao = txt_sao;
+			} else {
+				countObrigatorias++;
+				num_quest_obrigatorias += "4";
+				txt_e_ou_sao = txt_e;
+			}
+		}
+
+		var txt_obrigatorio = "A(s) questão(ões) "+ num_quest_obrigatorias + " " + txt_e_ou_sao;
+
+		if (countObrigatorias > 0) {
+			$(".questoesObrigatorias").html(txt_obrigatorio);
+			$("body").scrollTop(0);
+			return false;
+		} else {
+			return true;
+		}
+
+	}
+
+	$(document).ready(function(){
+		
+		// VFT
+		perguntaSn("pergunta_1");
+		perguntaSn("pergunta_3");
+		perguntaSn("pergunta_4");
+		perguntaSn("pergunta_5");
+		perguntaSn("pergunta_9");
+		perguntaSn("pergunta_11");
+
+		// pergunta2, pergunta6, pergunta7, pergunta8, pergunta10, pergunta12, pergunta13
+		
+
+		$("#formulario").submit(function(){
+			return validaCampos();
+		});
+
+	});
+	</script>
 	<style type="text/css">
 		* {
 			margin: 0;
@@ -164,7 +256,7 @@ include "tudo.php";
 	<div id="collapse">
 	<h1>Questionário para intolerantes à lactose</h1>
 		<div class="linha">
-			<p>A(s) questão(ões) 2, 3 e 6 são obrigatórias.</p>
+			<p class="questoesObrigatorias"></p>
 		</div>
 		<form id="formulario" method="post" action="grava.php">
 			<div class="linha">
@@ -178,14 +270,15 @@ include "tudo.php";
 			<div class="linha">
 				<label>3. Sexo*</label>
 				<select name="sexo">
-					<option select="selected">Selecione...</option>
-					<option>Masculino</option>
-					<option>Feminino</option>
+					<option value="" select="selected">Selecione...</option>
+					<option value="Masculino">Masculino</option>
+					<option value="Feminino">Feminino</option>
 				</select>
 			</div>
 			<div class="linha gray">
 				<label>4. Estado*</label>
 				<select name="estado" id="estado">
+					<option value="">Selecione...</option>
 				    <option value="AC">AC</option>
 				    <option value="AL">AL</option>
 				    <option value="AM">AM</option>
@@ -250,18 +343,18 @@ include "tudo.php";
 					case 'VFT':
 					?>
 						<div class="radiogroup">
-							<label id="<?php echo $name ?>_n"><input type="radio" name="<?php echo $name ?>" for="nRestaurantesLactose"><span>Não</span></label>
-							<label id="<?php echo $name ?>_s"><input type="radio" name="<?php echo $name ?>" for="RestaurantesLactose"><span>Sim</span></label>	
-							<label class="lblInputText" for="nomeRestaurante">Quais</label>
-							<input type="text" id="<?php echo $name ?>_resposta" name="<?php echo $name ?>_resposta">							
+							<label id="<?php echo $name ?>_n"><input type="radio" name="<?php echo $name ?>" for="nRestaurantesLactose" value="N"><span>Não</span></label>
+							<label id="<?php echo $name ?>_s"><input type="radio" name="<?php echo $name ?>" for="RestaurantesLactose" value="S"><span>Sim</span></label>	
+							<label style="display: none" class="lblInputText lbl<?php echo $name ?>_resposta" for="<?php echo $name ?>_resposta">Quais</label>
+							<input style="display: none" type="text" id="<?php echo $name ?>_resposta" name="<?php echo $name ?>_resposta">							
 						</div>
 					<?php
 						break;
 					case 'VF':
 					?>
 						<div class="radiogroup">
-							<label id="semIntolerancia"><input type="radio" name="<?php echo $name ?>" for="semIntolerancia"><span>Não</span></label>
-							<label id="comIntolerancia"><input type="radio" name="<?php echo $name ?>" for="comIntolerancia"><span>Sim</span></label>	
+							<label id="semIntolerancia"><input type="radio" name="<?php echo $name ?>" for="semIntolerancia" value="N"><span>Não</span></label>
+							<label id="comIntolerancia"><input type="radio" name="<?php echo $name ?>" for="comIntolerancia" value="S"><span>Sim</span></label>	
 							<div id="showListaIntolerancia">
 								<label class="lblInputText" for="listaIntolerancia">Quais</label><input type="text" id="listaIntolerancia">			
 							</div>
